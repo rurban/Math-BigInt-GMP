@@ -4,7 +4,7 @@
       "Tels"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "ExtUtils::MakeMaker version 7.0401, CPAN::Meta::Converter version 2.150005",
+   "generated_by" : "ExtUtils::MakeMaker version 7.1, CPAN::Meta::Converter version 2.150005",
    "license" : [
       "perl_5"
    ],
@@ -32,12 +32,12 @@
       },
       "runtime" : {
          "requires" : {
-            "Math::BigInt" : "1.999701",
+            "Math::BigInt" : "1.999702",
             "XSLoader" : "0.02"
          }
       }
    },
    "release_status" : "stable",
-   "version" : "1.41",
+   "version" : "1.42",
    "x_serialization_backend" : "JSON::PP version 2.27300"
 }
