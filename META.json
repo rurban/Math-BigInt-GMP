@@ -22,7 +22,8 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : "0"
+            "ExtUtils::MakeMaker" : "0",
+            "Test::More" : "0"
          }
       },
       "configure" : {
@@ -32,12 +33,12 @@
       },
       "runtime" : {
          "requires" : {
-            "Math::BigInt" : "1.999703",
+            "Math::BigInt" : "1.999706",
             "XSLoader" : "0.02"
          }
       }
    },
    "release_status" : "stable",
-   "version" : "1.43",
+   "version" : "1.44",
    "x_serialization_backend" : "JSON::PP version 2.27300"
 }

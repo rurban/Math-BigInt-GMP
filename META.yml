@@ -4,6 +4,7 @@ author:
   - 'Peter John Acklam <pjacklam@gmail.com>'
 build_requires:
   ExtUtils::MakeMaker: '0'
+  Test::More: '0'
 configure_requires:
   ExtUtils::MakeMaker: '0'
 dynamic_config: 1
@@ -18,7 +19,7 @@ no_index:
     - t
     - inc
 requires:
-  Math::BigInt: '1.999703'
+  Math::BigInt: '1.999706'
   XSLoader: '0.02'
-version: '1.43'
+version: '1.44'
 x_serialization_backend: 'CPAN::Meta::YAML version 0.016'
