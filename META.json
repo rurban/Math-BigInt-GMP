@@ -23,7 +23,7 @@
       "build" : {
          "requires" : {
             "ExtUtils::MakeMaker" : "0",
-            "Test::More" : "0"
+            "Test::More" : "0.47"
          }
       },
       "configure" : {
@@ -33,12 +33,12 @@
       },
       "runtime" : {
          "requires" : {
-            "Math::BigInt" : "1.999706",
+            "Math::BigInt" : "1.999709",
             "XSLoader" : "0.02"
          }
       }
    },
    "release_status" : "stable",
-   "version" : "1.44",
+   "version" : "1.45",
    "x_serialization_backend" : "JSON::PP version 2.27300"
 }
