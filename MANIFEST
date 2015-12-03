@@ -24,6 +24,7 @@ t/bigintpm.inc
 t/bigintpm.t
 t/biglog.t
 t/bigroot.t
+t/mbi-from-big-scalar.t
 t/storable.t
 t/threads.t
 TODO
