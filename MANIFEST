@@ -1,4 +1,3 @@
-#Makefile.PL#
 BUGS
 build/leak.pl
 build/leaktest
