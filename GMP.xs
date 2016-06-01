@@ -34,8 +34,8 @@ typedef mpz_t mpz_t_ornull;
 #  define GMP_HAS_MAGICEXT 0
 #endif
 
-#define NEW_GMP_MPZ_T      RETVAL = malloc (sizeof(mpz_t));
-#define NEW_GMP_MPZ_T_INIT RETVAL = malloc (sizeof(mpz_t)); mpz_init(*RETVAL);
+#define NEW_GMP_MPZ_T      RETVAL = (mpz_t*)malloc (sizeof(mpz_t));
+#define NEW_GMP_MPZ_T_INIT RETVAL = (mpz_t*)malloc (sizeof(mpz_t)); mpz_init(*RETVAL);
 #define GMP_GET_ARG_0      TEMP = mpz_from_sv(x);
 #define GMP_GET_ARG_1      TEMP_1 = mpz_from_sv(y);
 #define GMP_GET_ARGS_0_1   GMP_GET_ARG_0; GMP_GET_ARG_1;
@@ -92,9 +92,9 @@ attach_mpz_to_sv (SV *sv, mpz_t *mpz)
   mg =
 #endif
 #if GMP_HAS_MAGICEXT
-    sv_magicext(SvRV(sv), NULL, PERL_MAGIC_ext, &vtbl_gmp, (void *)mpz, 0);
+    sv_magicext(SvRV(sv), NULL, PERL_MAGIC_ext, &vtbl_gmp, (char *)mpz, 0);
 #else
-  sv_magic(SvRV(sv), NULL, PERL_MAGIC_ext, (void *)refaddr, HEf_SVKEY);
+    sv_magic(SvRV(sv), NULL, PERL_MAGIC_ext, (char *)refaddr, HEf_SVKEY);
 #endif
 
 #if GMP_THREADSAFE && GMP_HAS_MAGICEXT
@@ -188,7 +188,7 @@ _new_attach(Class,sv,x)
   PREINIT:
     mpz_t *mpz;
   CODE:
-    mpz = malloc (sizeof(mpz_t));
+    mpz = (mpz_t*)malloc (sizeof(mpz_t));
     if ((SvUOK(x) || SvIOK(x)) && (sizeof(UV) <= sizeof(unsigned long) || SvUV(x) == (unsigned long)SvUV(x))) {
       mpz_init_set_ui(*mpz, (unsigned long)SvUV(x));
     }
@@ -352,7 +352,7 @@ _str(Class, n)
 ##############################################################################
 # _len() - return the length of the number in base 10 (costly)
 
-int
+size_t
 _len(Class, n)
         mpz_t*  n
   PREINIT:
@@ -379,7 +379,7 @@ _len(Class, n)
 ##############################################################################
 # _alen() - return the approx. length of the number in base 10 (fast)
 
-int
+size_t
 _alen(Class, n)
         mpz_t*  n
 
@@ -396,12 +396,12 @@ _alen(Class, n)
 # For numbers longer than X digits (10?) we could divide repeatable by 1e5
 # or something and see if we get zeros.
 
-int
+size_t
 _zeros(Class,n)
         mpz_t*  n
 
   PREINIT:
-    int len;
+    size_t len;
     char *buf;
     char *buf_end;
 
@@ -446,7 +446,7 @@ _as_hex(Class,n)
         mpz_t * n
 
   PREINIT:
-    int len;
+    size_t len;
     char *buf;
 
   CODE:
@@ -469,7 +469,7 @@ _as_bin(Class,n)
         mpz_t * n
 
   PREINIT:
-    int len;
+    size_t len;
     char *buf;
 
   CODE:
@@ -492,7 +492,7 @@ _as_oct(Class,n)
         mpz_t * n
 
   PREINIT:
-    int len;
+    size_t len;
     char *buf;
 
   CODE:
@@ -537,7 +537,7 @@ _modinv(Class,x,y)
         mpz_t*  y
 
   PREINIT:
-    int rc, sign;
+    int rc;
     SV* s;
     mpz_t* RETVAL;
   PPCODE:
@@ -546,18 +546,18 @@ _modinv(Class,x,y)
     EXTEND(SP, 2);      /* we return two values */
     if (rc == 0)
       {
-      /* Inverse doesn't exist. Return both values undefined. */
-      PUSHs ( &PL_sv_undef );
-      PUSHs ( &PL_sv_undef );
+        /* Inverse doesn't exist. Return both values undefined. */
+        PUSHs ( &PL_sv_undef );
+        PUSHs ( &PL_sv_undef );
       }
     else
       {
       /* Inverse exists. When the modulus to mpz_invert() is positive,
        * the returned value is also positive. */
-      PUSHs(sv_2mortal(sv_from_mpz(RETVAL)));
+        PUSHs(sv_2mortal(sv_from_mpz(RETVAL)));
         s = sv_newmortal();
         sv_setpvn (s, "+", 1);
-      PUSHs ( s );
+        PUSHs ( s );
       }
 
 ##############################################################################
@@ -653,7 +653,7 @@ _rsft(Class,x,y,base_sv)
     GMP_GET_ARGS_0_1;   /* (TEMP, TEMP_1) = (x,y)  */
 
     y_ui = mpz_get_ui(*TEMP_1);
-    BASE = malloc (sizeof(mpz_t));
+    BASE = (mpz_t*)malloc (sizeof(mpz_t));
     mpz_init_set_ui(*BASE,SvUV(base_sv));
 
     mpz_pow_ui(*BASE, *BASE, y_ui); /* ">> 3 in base 4" => "x / (4 ** 3)" */
@@ -680,7 +680,7 @@ _lsft(Class,x,y,base_sv)
     GMP_GET_ARGS_0_1;   /* (TEMP, TEMP_1) = (x,y)  */
 
     y_ui = mpz_get_ui(*TEMP_1);
-    BASE = malloc (sizeof(mpz_t));
+    BASE = (mpz_t*)malloc (sizeof(mpz_t));
     mpz_init_set_ui(*BASE,SvUV(base_sv));
 
     mpz_pow_ui(*BASE, *BASE, y_ui); /* "<< 3 in base 4" => "x * (4 ** 3)" */
@@ -733,7 +733,7 @@ _div(Class,x,y)
     if (GIMME_V == G_ARRAY)
       {
       /* former bdiv_two() routine */
-      rem = malloc (sizeof(mpz_t));
+      rem = (mpz_t*)malloc (sizeof(mpz_t));
       mpz_init(*rem);
       mpz_tdiv_qr(*TEMP, *rem, *TEMP, *TEMP_1);
       EXTEND(SP, 2);
